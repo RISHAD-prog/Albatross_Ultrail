@@ -1,0 +1,96 @@
+AlbatrossUltrail/Albatross_Api/.env.example
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+storage/logs/*
+
+# Environment files
+.env
+.env.*
+
+# Dependency directories
+node_modules/
+vendor/
+/public/hot
+/public/storage
+/public/js
+/public/css
+storage/*.key
+bootstrap/cache/*
+
+# Build directories
+dist/
+dist-ssr/
+/public/build
+/public/mix-manifest.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Laravel specific
+composer.lock
+package-lock.json
+yarn.lock
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.env.backup
+.phpunit.result.cache
+*.env
+
+# Testing
+coverage/
+
+# Laravel storage
+storage/app/public/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+
+# React/Vite specific
+.cache/
+.temp/
+*.tmp
+*.bak
+*.swp
+
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+.env
+.env.*
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/auth.json
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
