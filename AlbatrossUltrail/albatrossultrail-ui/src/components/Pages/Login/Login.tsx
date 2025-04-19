@@ -94,7 +94,13 @@ const Login = () => {
                                         type="text"
                                         id="email"
                                         placeholder="Enter your email"
-                                        {...register("email", { required: "Email field is required" })}
+                                        {...register("email", {
+                                            required: "Email field is required",
+                                            pattern: {
+                                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                message: "Please enter a valid email address"
+                                            }
+                                        })}
                                         className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                                     />
                                     {errors.email && <div className="invalid-feedback">{String(errors.email.message)}</div>}

@@ -1,85 +1,121 @@
 import { useForm } from 'react-hook-form';
-import { FaRunning, FaUser, FaIdCard, FaPhone, FaMapMarkerAlt, FaNotesMedical, FaMedal, FaUserCircle, FaLock } from 'react-icons/fa';
+import { FaRunning, FaUser, FaIdCard, FaPhone, FaMapMarkerAlt, FaMedal, FaUserCircle, FaLock } from 'react-icons/fa';
 import { RaceCategory, RaceCategoryService } from '../../../hooks/Services/RaceCategoryService/RaceCategoryService';
 import { useEffect, useState } from 'react';
+import Registration from '../../../hooks/Services/Registration/Registration';
 
 type FormData = {
-  firstName: string;
-  lastName: string;
-  gender: string;
-  dateOfBirth: string;
-  nationality: string;
-  idType: string;
-  idNumber: string;
-  phone: string;
-  email: string;
-  password: string;
-  emergencyContact: string;
-  emergencyPhone: string;
-  address: string;
-  city: string;
-  country: string;
-  raceCategory: string;
-  tShirtSize: string;
-  medicalConditions: string;
-  termsAccepted: boolean;
-  itraUsername: string;
-  itraUserID: string;
-  userPhoto: FileList | null;
+  FirstName: string;
+  LastName: string;
+  Gender: string;
+  DOB: Date;
+  Nationality: string;
+  IdentifyType: string;
+  IdentificationNum: number;
+  Phone: number;
+  Email: string;
+  Password: string;
+  Address: string;
+  City: string;
+  Country: string;
+  RaceCategoryID: number;
+  TShirtSize: string;
+  Comments: string;
+  ITRAUserName: string;
+  UserPhoto: any;
 };
 
 const RegistrationForm = () => {
   const [raceCategories, setRaceCategories] = useState<RaceCategory[]>([]);
+  const [PasswordVisible, setPasswordVisible] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
       const data = await RaceCategoryService.getRaceCategories();
-        setRaceCategories(data);
+      setRaceCategories(data);
     };
 
     fetchCategories();
   }, []);
 
-  
   const {
     register,
-    // handleSubmit,
+    handleSubmit,
     formState: { errors },
     watch,
     resetField
   } = useForm<FormData>({
     defaultValues: {
-      idType: 'passport',
-      raceCategory: '33K',
-      tShirtSize: 'M'
+      IdentifyType: 'passport',
+      RaceCategoryID: 4,
+      TShirtSize: 'm'
     }
   });
 
-  // const raceCategories = [
-  //   { value: '33K', label: '33K Trail Race (958m elevation)' },
-  //   { value: '50K', label: '50K Ultra Trail (1437m elevation)' },
-  //   { value: '83K', label: '83K Ultra Trail (2395m elevation)' }
-  // ];
+  const TShirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-  const tShirtSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const onSubmit = async (data: FormData) => {
+    let formData = new FormData();
 
-  // const onSubmit = async (data: FormData) => {
-  //   const formData = new FormData();
-    
-  //   // Append all form data
-  //   Object.entries(data).forEach(([key, value]) => {
-  //     if (key === 'userPhoto' && value && value.length > 0) {
-  //       formData.append(key, value[0]);
-  //     } else if (value !== null && value !== undefined) {
-  //       formData.append(key, String(value));
-  //     }
-  //   });
+    // Append all form data
+
+    // Required fields
+    formData.append('FirstName', data.FirstName);
+    formData.append('LastName', data.LastName);
+    formData.append('Gender', data.Gender);
+
+    // Handle Date conversion
+    const dob = typeof data.DOB === 'string' ? data.DOB : data.DOB.toISOString();
+    formData.append('DOB', dob);
+
+    formData.append('Nationality', data.Nationality);
+    formData.append('IdentifyType', data.IdentifyType);
+    formData.append('IdentificationNum', String(data.IdentificationNum));
+    formData.append('Phone', String(data.Phone));
+    formData.append('Email', data.Email);
+    formData.append('Password', data.Password);
+    formData.append('Address', data.Address);
+    formData.append('City', data.City);
+    formData.append('Country', data.Country);
+    formData.append('RaceCategoryID', String(data.RaceCategoryID));
+    formData.append('TShirtSize', data.TShirtSize);
+    formData.append('UserPhoto', String(previewPhoto));
+
+    // Optional fields
+    if (data.Comments) formData.append('Comments', data.Comments);
+    if (data.ITRAUserName) formData.append('ITRAUserName', data.ITRAUserName);
+
+    // Handle file upload
+    // if (data.UserPhoto) {
+    //   if (data.UserPhoto instanceof FileList && data.UserPhoto.length > 0) {
+    //     formData.append('UserPhoto', data.UserPhoto[0]);
+    //   } else if (data.UserPhoto instanceof File) {
+    //     formData.append('UserPhoto', data.UserPhoto);
+    //   }
+    // }
+
+
+    try {
+      const response = await Registration.save(formData);
+      return response;
+      // Handle response
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  // const handleRemovePhoto = () => {
+  //   resetField('UserPhoto');
+  // };
+
+  // const UserPhoto = watch('UserPhoto');
+  // const previewPhoto = UserPhoto && UserPhoto.length > 0
+  //   ? URL.createObjectURL(UserPhoto[0])
+  //   : null;
 
   //   try {
-  //     const response = await fetch('/api/register', {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
+  //     const response= await Registration.save(data);
+  //     return response;
   //     // Handle response
   //   } catch (error) {
   //     // Handle error
@@ -87,12 +123,12 @@ const RegistrationForm = () => {
   // };
 
   const handleRemovePhoto = () => {
-    resetField('userPhoto');
+    resetField('UserPhoto');
   };
 
-  const userPhoto = watch('userPhoto');
-  const previewPhoto = userPhoto && userPhoto.length > 0 
-    ? URL.createObjectURL(userPhoto[0]) 
+  const UserPhoto = watch('UserPhoto');
+  const previewPhoto = UserPhoto && UserPhoto.length > 0
+    ? URL.createObjectURL(UserPhoto[0])
     : null;
 
   return (
@@ -108,79 +144,78 @@ const RegistrationForm = () => {
             </div>
 
             <div className="card-body p-4 p-md-5">
-            {/* onSubmit={handleSubmit(onSubmit)} */}
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Personal Information */}
                 <fieldset className="mb-4">
                   <legend className="h5 text-primary border-bottom pb-2">
                     <FaUser className="me-2" />
                     Personal Information
                   </legend>
-                  
+
                   <div className="row g-3">
                     <div className="col-md-6">
-                      <label htmlFor="firstName" className="form-label">First Name*</label>
+                      <label htmlFor="FirstName" className="form-label">First Name*</label>
                       <input
-                        id="firstName"
-                        className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
-                        {...register('firstName', { required: 'First name is required' })}
+                        id="FirstName"
+                        className={`form-control ${errors.FirstName ? 'is-invalid' : ''}`}
+                        {...register('FirstName', { required: 'First name is required' })}
                       />
-                      {errors.firstName && (
-                        <div className="invalid-feedback">{errors.firstName.message}</div>
+                      {errors.FirstName && (
+                        <div className="invalid-feedback">{errors.FirstName.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-6">
-                      <label htmlFor="lastName" className="form-label">Last Name*</label>
+                      <label htmlFor="LastName" className="form-label">Last Name*</label>
                       <input
-                        id="lastName"
-                        className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
-                        {...register('lastName', { required: 'Last name is required' })}
+                        id="LastName"
+                        className={`form-control ${errors.LastName ? 'is-invalid' : ''}`}
+                        {...register('LastName', { required: 'Last name is required' })}
                       />
-                      {errors.lastName && (
-                        <div className="invalid-feedback">{errors.lastName.message}</div>
+                      {errors.LastName && (
+                        <div className="invalid-feedback">{errors.LastName.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-4">
-                      <label htmlFor="gender" className="form-label">Gender*</label>
+                      <label htmlFor="Gender" className="form-label">Gender*</label>
                       <select
-                        id="gender"
-                        className={`form-select ${errors.gender ? 'is-invalid' : ''}`}
-                        {...register('gender', { required: 'Gender is required' })}
+                        id="Gender"
+                        className={`form-select ${errors.Gender ? 'is-invalid' : ''}`}
+                        {...register('Gender', { required: 'Gender is required' })}
                       >
                         <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                        <option value="o">Other</option>
                       </select>
-                      {errors.gender && (
-                        <div className="invalid-feedback">{errors.gender.message}</div>
+                      {errors.Gender && (
+                        <div className="invalid-feedback">{errors.Gender.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-4">
-                      <label htmlFor="dateOfBirth" className="form-label">Date of Birth*</label>
+                      <label htmlFor="DOB" className="form-label">Date of Birth*</label>
                       <input
                         type="date"
-                        id="dateOfBirth"
-                        className={`form-control ${errors.dateOfBirth ? 'is-invalid' : ''}`}
-                        {...register('dateOfBirth', { required: 'Date of birth is required' })}
+                        id="DOB"
+                        className={`form-control ${errors.DOB ? 'is-invalid' : ''}`}
+                        {...register('DOB', { required: 'Date of birth is required' })}
                       />
-                      {errors.dateOfBirth && (
-                        <div className="invalid-feedback">{errors.dateOfBirth.message}</div>
+                      {errors.DOB && (
+                        <div className="invalid-feedback">{errors.DOB.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-4">
-                      <label htmlFor="nationality" className="form-label">Nationality*</label>
+                      <label htmlFor="Nationality" className="form-label">Nationality*</label>
                       <input
-                        id="nationality"
-                        className={`form-control ${errors.nationality ? 'is-invalid' : ''}`}
-                        {...register('nationality', { required: 'Nationality is required' })}
+                        id="Nationality"
+                        className={`form-control ${errors.Nationality ? 'is-invalid' : ''}`}
+                        {...register('Nationality', { required: 'Nationality is required' })}
                       />
-                      {errors.nationality && (
-                        <div className="invalid-feedback">{errors.nationality.message}</div>
+                      {errors.Nationality && (
+                        <div className="invalid-feedback">{errors.Nationality.message}</div>
                       )}
                     </div>
                   </div>
@@ -192,33 +227,34 @@ const RegistrationForm = () => {
                     <FaIdCard className="me-2" />
                     Identification
                   </legend>
-                  
+
                   <div className="row g-3">
                     <div className="col-md-6">
-                      <label htmlFor="idType" className="form-label">ID Type*</label>
+                      <label htmlFor="IdentifyType" className="form-label">ID Type*</label>
                       <select
-                        id="idType"
-                        className={`form-select ${errors.idType ? 'is-invalid' : ''}`}
-                        {...register('idType', { required: 'ID type is required' })}
+                        id="IdentifyType"
+                        className={`form-select ${errors.IdentifyType ? 'is-invalid' : ''}`}
+                        {...register('IdentifyType', { required: 'ID type is required' })}
                       >
                         <option value="passport">Passport</option>
                         <option value="national_id">National ID</option>
                         <option value="driving_license">Driving License</option>
                       </select>
-                      {errors.idType && (
-                        <div className="invalid-feedback">{errors.idType.message}</div>
+                      {errors.IdentifyType && (
+                        <div className="invalid-feedback">{errors.IdentifyType.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-6">
-                      <label htmlFor="idNumber" className="form-label">ID Number*</label>
+                      <label htmlFor="IdentificationNum" className="form-label">ID Number*</label>
                       <input
-                        id="idNumber"
-                        className={`form-control ${errors.idNumber ? 'is-invalid' : ''}`}
-                        {...register('idNumber', { required: 'ID number is required' })}
+                        type='number'
+                        id="IdentificationNum"
+                        className={`form-control ${errors.IdentificationNum ? 'is-invalid' : ''}`}
+                        {...register('IdentificationNum', { required: 'ID number is required' })}
                       />
-                      {errors.idNumber && (
-                        <div className="invalid-feedback">{errors.idNumber.message}</div>
+                      {errors.IdentificationNum && (
+                        <div className="invalid-feedback">{errors.IdentificationNum.message}</div>
                       )}
                     </div>
                   </div>
@@ -234,18 +270,18 @@ const RegistrationForm = () => {
                   <div className="row g-3">
                     {/* ITRA Username */}
                     <div className="col-md-6">
-                      <label htmlFor="itraUsername" className="form-label">
+                      <label htmlFor="ITRAUserName" className="form-label">
                         <FaMedal className="me-2" />
                         ITRA Username (Required)
                       </label>
                       <input
-                        id="itraUsername"
-                        className={`form-control ${errors.itraUsername ? 'is-invalid' : ''}`}
-                        {...register('itraUsername', { required: 'ITRA username is required' })}
+                        id="ITRAUserName"
+                        className={`form-control ${errors.ITRAUserName ? 'is-invalid' : ''}`}
+                        {...register('ITRAUserName', { required: 'ITRA username is required' })}
                         placeholder="ITRA runner profile username"
                       />
-                      {errors.itraUsername && (
-                        <div className="invalid-feedback">{errors.itraUsername.message}</div>
+                      {errors.ITRAUserName && (
+                        <div className="invalid-feedback">{errors.ITRAUserName.message}</div>
                       )}
                       <small className="text-muted">
                         Helps us verify your trail running experience
@@ -294,24 +330,24 @@ const RegistrationForm = () => {
                         <div>
                           <input
                             type="file"
-                            id="userPhoto"
+                            id="UserPhoto"
                             className="d-none"
                             accept="image/*"
-                            {...register('userPhoto', { 
+                            {...register('UserPhoto', {
                               required: 'Runner photo is required',
                               validate: {
-                                fileSize: files => 
+                                fileSize: files =>
                                   !files || files[0]?.size <= 2 * 1024 * 1024 || 'Max file size is 2MB',
-                                fileType: files => 
-                                  !files || ['image/jpeg', 'image/png'].includes(files[0]?.type) || 
+                                fileType: files =>
+                                  !files || ['image/jpeg', 'image/png'].includes(files[0]?.type) ||
                                   'Only JPEG/PNG images allowed'
                               }
                             })}
                           />
-                          <label htmlFor="userPhoto" className="btn btn-sm btn-outline-primary me-2">
-                            {userPhoto?.length ? 'Change' : 'Upload'}
+                          <label htmlFor="UserPhoto" className="btn btn-sm btn-outline-primary me-2">
+                            {UserPhoto?.length ? 'Change' : 'Upload'}
                           </label>
-                          {userPhoto?.length && (
+                          {UserPhoto?.length && (
                             <button
                               type="button"
                               className="btn btn-sm btn-outline-danger"
@@ -322,8 +358,8 @@ const RegistrationForm = () => {
                           )}
                         </div>
                       </div>
-                      {errors.userPhoto && (
-                        <small className="text-danger d-block mt-1">{errors.userPhoto.message}</small>
+                      {errors.UserPhoto && (
+                        <small className="text-danger d-block mt-1">{String(errors.UserPhoto.message)}</small>
                       )}
                       <small className="text-muted d-block mt-1">
                         Clear face photo for bib identification (JPEG/PNG, max 2MB)
@@ -338,74 +374,79 @@ const RegistrationForm = () => {
                     <FaPhone className="me-2" />
                     Contact Information
                   </legend>
-                  
+
                   <div className="row g-3">
                     <div className="col-md-6">
-                      <label htmlFor="phone" className="form-label">Phone Number*</label>
+                      <label htmlFor="Phone" className="form-label">Phone Number*</label>
                       <input
-                        type="tel"
-                        id="phone"
-                        className={`form-control ${errors.phone ? 'is-invalid' : ''}`}
-                        {...register('phone', { 
+                        type="number"
+                        id="Phone"
+                        className={`form-control ${errors.Phone ? 'is-invalid' : ''}`}
+                        {...register('Phone', {
                           required: 'Phone number is required',
                           pattern: {
                             value: /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/,
-                            message: 'Invalid phone number format'
+                            message: 'Invalid Phone number format'
                           }
                         })}
                       />
-                      {errors.phone && (
-                        <div className="invalid-feedback">{errors.phone.message}</div>
+                      {errors.Phone && (
+                        <div className="invalid-feedback">{errors.Phone.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-6">
-                      <label htmlFor="email" className="form-label">Email*</label>
+                      <label htmlFor="Email" className="form-label">Email*</label>
                       <input
-                        type="email"
-                        id="email"
-                        className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                        {...register('email', { 
+                        type="Email"
+                        id="Email"
+                        className={`form-control ${errors.Email ? 'is-invalid' : ''}`}
+                        {...register('Email', {
                           required: 'Email is required',
                           pattern: {
                             value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: 'Invalid email address'
+                            message: 'Invalid Email Address'
                           }
                         })}
                       />
-                      {errors.email && (
-                        <div className="invalid-feedback">{errors.email.message}</div>
+                      {errors.Email && (
+                        <div className="invalid-feedback">{errors.Email.message}</div>
                       )}
                     </div>
 
                     {/* Password Field */}
                     <div className="col-md-6">
-                      <label htmlFor="password" className="form-label">
+                      <label htmlFor="Password" className="form-label">
                         <FaLock className="me-2" />
                         Password*
                       </label>
                       <input
-                        type="password"
-                        id="password"
-                        className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                        {...register('password', { 
-                          required: 'Password is required',
+                        type={PasswordVisible ? 'text' : 'Password'}
+                        id="Password"
+                        placeholder="Enter your Password"
+                        {...register("Password", {
+                          required: "Password field is required",
                           minLength: {
-                            value: 8,
-                            message: 'Password must be at least 8 characters'
+                            value: 5,
+                            message: "Password must be at least 5 characters long"
                           },
                           pattern: {
-                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-                            message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).+$/,
+                            message: "Password must contain at least one uppercase letter, one lowercase letter, and one special character"
                           }
                         })}
+                        className={`form-control ${errors.Password ? 'is-invalid' : ''}`}
                       />
-                      {errors.password && (
-                        <div className="invalid-feedback">{errors.password.message}</div>
-                      )}
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary mt-2"
+                        onClick={() => setPasswordVisible(!PasswordVisible)}
+                      >
+                        {PasswordVisible ? 'Hide' : 'Show'}
+                      </button>
                     </div>
-                    
-                    <div className="col-md-6">
+
+                    {/* <div className="col-md-6">
                       <label htmlFor="emergencyContact" className="form-label">Emergency Contact Name*</label>
                       <input
                         id="emergencyContact"
@@ -415,26 +456,26 @@ const RegistrationForm = () => {
                       {errors.emergencyContact && (
                         <div className="invalid-feedback">{errors.emergencyContact.message}</div>
                       )}
-                    </div>
-                    
-                    <div className="col-md-6">
+                    </div> */}
+
+                    {/* <div className="col-md-6">
                       <label htmlFor="emergencyPhone" className="form-label">Emergency Contact Phone*</label>
                       <input
                         type="tel"
                         id="emergencyPhone"
                         className={`form-control ${errors.emergencyPhone ? 'is-invalid' : ''}`}
                         {...register('emergencyPhone', { 
-                          required: 'Emergency phone is required',
+                          required: 'Emergency Phone is required',
                           pattern: {
                             value: /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/,
-                            message: 'Invalid phone number format'
+                            message: 'Invalid Phone number format'
                           }
                         })}
                       />
                       {errors.emergencyPhone && (
                         <div className="invalid-feedback">{errors.emergencyPhone.message}</div>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 </fieldset>
 
@@ -444,41 +485,41 @@ const RegistrationForm = () => {
                     <FaMapMarkerAlt className="me-2" />
                     Address
                   </legend>
-                  
+
                   <div className="row g-3">
                     <div className="col-12">
-                      <label htmlFor="address" className="form-label">Street Address*</label>
+                      <label htmlFor="Address" className="form-label">Street Address*</label>
                       <input
-                        id="address"
-                        className={`form-control ${errors.address ? 'is-invalid' : ''}`}
-                        {...register('address', { required: 'Address is required' })}
+                        id="Address"
+                        className={`form-control ${errors.Address ? 'is-invalid' : ''}`}
+                        {...register('Address', { required: 'Address is required' })}
                       />
-                      {errors.address && (
-                        <div className="invalid-feedback">{errors.address.message}</div>
+                      {errors.Address && (
+                        <div className="invalid-feedback">{errors.Address.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-6">
-                      <label htmlFor="city" className="form-label">City*</label>
+                      <label htmlFor="City" className="form-label">City*</label>
                       <input
-                        id="city"
-                        className={`form-control ${errors.city ? 'is-invalid' : ''}`}
-                        {...register('city', { required: 'City is required' })}
+                        id="City"
+                        className={`form-control ${errors.City ? 'is-invalid' : ''}`}
+                        {...register('City', { required: 'City is required' })}
                       />
-                      {errors.city && (
-                        <div className="invalid-feedback">{errors.city.message}</div>
+                      {errors.City && (
+                        <div className="invalid-feedback">{errors.City.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-6">
-                      <label htmlFor="country" className="form-label">Country*</label>
+                      <label htmlFor="Country" className="form-label">Country*</label>
                       <input
-                        id="country"
-                        className={`form-control ${errors.country ? 'is-invalid' : ''}`}
-                        {...register('country', { required: 'Country is required' })}
+                        id="Country"
+                        className={`form-control ${errors.Country ? 'is-invalid' : ''}`}
+                        {...register('Country', { required: 'Country is required' })}
                       />
-                      {errors.country && (
-                        <div className="invalid-feedback">{errors.country.message}</div>
+                      {errors.Country && (
+                        <div className="invalid-feedback">{errors.Country.message}</div>
                       )}
                     </div>
                   </div>
@@ -490,66 +531,66 @@ const RegistrationForm = () => {
                     <FaRunning className="me-2" />
                     Race Information
                   </legend>
-                  
+
                   <div className="row g-3">
                     <div className="col-md-6">
-                      <label htmlFor="raceCategory" className="form-label">Race Category*</label>
+                      <label htmlFor="RaceCategoryID" className="form-label">Race Category*</label>
                       <select
-                        id="raceCategory"
-                        className={`form-select ${errors.raceCategory ? 'is-invalid' : ''}`}
-                        {...register('raceCategory', { required: 'Race category is required' })}
+                        id="RaceCategoryID"
+                        className={`form-select ${errors.RaceCategoryID ? 'is-invalid' : ''}`}
+                        {...register('RaceCategoryID', { required: 'Race category is required' })}
                       >
                         {raceCategories.map(category => (
-                          <option key={category.CategoryName} value={category.CategoryName}>
+                          <option key={category.CategoryName} value={category.ID}>
                             {category.Label}
                           </option>
                         ))}
                       </select>
-                      {errors.raceCategory && (
-                        <div className="invalid-feedback">{errors.raceCategory.message}</div>
+                      {errors.RaceCategoryID && (
+                        <div className="invalid-feedback">{errors.RaceCategoryID.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-md-6">
-                      <label htmlFor="tShirtSize" className="form-label">T-Shirt Size*</label>
+                      <label htmlFor="TShirtSize" className="form-label">T-Shirt Size*</label>
                       <select
-                        id="tShirtSize"
-                        className={`form-select ${errors.tShirtSize ? 'is-invalid' : ''}`}
-                        {...register('tShirtSize', { required: 'T-shirt size is required' })}
+                        id="TShirtSize"
+                        className={`form-select ${errors.TShirtSize ? 'is-invalid' : ''}`}
+                        {...register('TShirtSize', { required: 'T-shirt size is required' })}
                       >
-                        {tShirtSizes.map(size => (
+                        {TShirtSizes.map(size => (
                           <option key={size} value={size}>{size}</option>
                         ))}
                       </select>
-                      {errors.tShirtSize && (
-                        <div className="invalid-feedback">{errors.tShirtSize.message}</div>
+                      {errors.TShirtSize && (
+                        <div className="invalid-feedback">{errors.TShirtSize.message}</div>
                       )}
                     </div>
-                    
+
                     <div className="col-12">
-                      <label htmlFor="medicalConditions" className="form-label">
-                        <FaNotesMedical className="me-2" />
-                        Medical Conditions/Allergies
+                      <label htmlFor="Comments" className="form-label">
+                        <FaRunning className="me-2" />
+                        Any Comments or Discussions you want to share with us?
                       </label>
                       <textarea
-                        id="medicalConditions"
+                        id="Comments"
                         className="form-control"
-                        {...register('medicalConditions')}
+                        {...register('Comments')}
                         rows={3}
-                        placeholder="Please disclose any medical conditions or allergies that organizers should be aware of"
+                        placeholder="Please share any comments or discussions you want to share with us"
                       />
                     </div>
                   </div>
                 </fieldset>
 
                 {/* Terms and Conditions */}
-                <div className="mb-4 form-check">
+                {/* <div className="mb-4 form-check">
                   <input
                     type="checkbox"
                     id="termsAccepted"
                     className={`form-check-input ${errors.termsAccepted ? 'is-invalid' : ''}`}
-                    {...register('termsAccepted', { 
-                      required: 'You must accept the terms and conditions' 
+                    {...register('termsAccepted', {
+                      required: 'You must accept the terms and conditions'
                     })}
                   />
                   <label htmlFor="termsAccepted" className="form-check-label">
@@ -558,7 +599,7 @@ const RegistrationForm = () => {
                   {errors.termsAccepted && (
                     <div className="invalid-feedback">{errors.termsAccepted.message}</div>
                   )}
-                </div>
+                </div> */}
 
                 {/* Submit Button */}
                 <div className="d-grid">

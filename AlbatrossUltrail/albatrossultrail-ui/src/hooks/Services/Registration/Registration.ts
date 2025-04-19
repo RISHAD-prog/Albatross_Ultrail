@@ -2,12 +2,6 @@ import axios, { AxiosInstance, AxiosResponse } from "axios"
 // http://127.0.0.1:8000 https://albatrossultrail.com
 const BASE_URL = 'http://127.0.0.1:8000/api'
 
-export interface RaceCategory{
-    ID: number,
-    CategoryName: string,
-    Label: string
-}
-
 const api: AxiosInstance  = axios.create({
     baseURL: BASE_URL,
     headers: {
@@ -25,12 +19,12 @@ api.interceptors.request.use((config)=>{
     return config;
 })
 
-export const RaceCategoryService = {
-    getRaceCategories: async (): Promise<RaceCategory[]> => {
-      const response: AxiosResponse<RaceCategory[]> = await api.get('/GetAllRaceCategories');
+export const Registration = {
+    save: async (model: any): Promise<any> => {
+      const response: AxiosResponse<any> = await api.post('/Registration',  model);
       return response.data;
     },
   };
   
-export default RaceCategoryService;
+export default Registration;
 
