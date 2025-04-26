@@ -2,13 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Main from "../Layouts/Main";
 import LoadingSpinner from "../LoadingSpinner.tsx/LoadingSpinner";
-import EventDetails from "../Pages/EventDetails/EventDetails";
-import Login from "../Pages/Login/Login";
+// import Login from "../Pages/Login/Login";
 
 // Lazy-loaded components
 const Home = lazy(() => import("../Pages/Home/Home"));
 const AboutPage = lazy(() => import("../Pages/About_Us/About"));
-const RegistrationForm = lazy(() => import("../Pages/Registration/RegistrationForm"));
+const Criteria50K = lazy(() => import("../Pages/50K/Criteria50K"));
+const Criteria83K = lazy(() => import("../Pages/83K/Criteria83K"));
+const Criteria33K = lazy(() => import("../Pages/33K/Criteria33K"));
+// const RegistrationForm = lazy(() => import("../Pages/Registration/RegistrationForm"));
 
 const routers = createBrowserRouter([
   {
@@ -31,30 +33,46 @@ const routers = createBrowserRouter([
           </Suspense>
         )
       },
+      // {
+      //   path: '/registration',
+      //   element: (
+      //     <Suspense fallback={<LoadingSpinner />}>
+      //       <RegistrationForm />
+      //     </Suspense>
+      //   )
+      // },
       {
-        path: '/registration',
+        path: '/criteria83K',
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <RegistrationForm />
+            <Criteria83K />
           </Suspense>
         )
       },
       {
-        path: '/terms',
+        path: '/criteria50K',
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <EventDetails />
+            <Criteria50K />
           </Suspense>
         )
       },
       {
-        path: '/login',
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <Login />
-          </Suspense>
-        )
+      path: '/criteria33K',
+      element: (
+        <Suspense fallback={<LoadingSpinner />}>
+          <Criteria33K />
+        </Suspense>
+      )
       },
+      // {
+      //   path: '/login',
+      //   element: (
+      //     <Suspense fallback={<LoadingSpinner />}>
+      //       <Login />
+      //     </Suspense>
+      //   )
+      // },
     ]
   }
 ]);

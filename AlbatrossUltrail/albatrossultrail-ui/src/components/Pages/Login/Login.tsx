@@ -1,24 +1,20 @@
-import { useContext, useState } from "react";
+import {useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BsGoogle } from "react-icons/bs";
-// import { AuthContext } from "../../components/Provider/AuthProvider/AuthProvider";
-import Swal from "sweetalert2";
-import { FcPositiveDynamic, FcServices, FcSportsMode } from "react-icons/fc";
+// import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [checked, setChecked] = useState(true);
     const [passwordVisible, setPasswordVisible] = useState(false);
     // const { signIn, googleSignIn } = useContext(AuthContext);
-    const navigate = useNavigate();
-    let location = useLocation();
-    let from = location.state?.from?.pathName || "/";
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    // const navigate = useNavigate();
+    // let location = useLocation();
+    // let from = location.state?.from?.pathName || "/";
+    const { register, formState: { errors } } = useForm();
 
-    const handleChange = () => {
-        setChecked(!checked);
-        setPasswordVisible(!passwordVisible);
-    };
+    // const handleChange = () => {
+    //     setChecked(!checked);
+    //     setPasswordVisible(!passwordVisible);
+    // };
 
     // const onSubmit = (data: any )=> {
     //     signIn(data.email, data.password)

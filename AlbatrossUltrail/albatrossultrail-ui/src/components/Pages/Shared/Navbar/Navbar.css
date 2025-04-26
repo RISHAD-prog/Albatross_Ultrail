@@ -8,6 +8,15 @@
 
 .navbar-brand {
   padding: 0;
+  max-height: 4rem; /* Set a maximum height for the navbar brand */
+  display: flex;
+  align-items: center; /* Center the logo vertically */
+}
+
+.navbar-brand img {
+  max-height: 100%; /* Ensure the logo image scales within the navbar brand */
+  height: auto;
+  width: auto;
 }
 
 .navbar-nav .nav-link {
@@ -54,19 +63,21 @@
     color: rgba(255, 255, 255, 0.9) !important;
     margin: 0.25rem 0;
     border-radius: 0.25rem;
-    transition: all 0.2s ease;
+    transition: transform 0.3s ease-in-out;
   }
   
   .nav-link:hover,
   .nav-link:focus {
     background-color: rgba(255, 255, 255, 0.1);
     color: white !important;
+    cursor: pointer;
   }
   
   .dropdown-menu {
     background-color: rgba(10, 30, 60, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 0.25rem;
+    z-index: 1060; /* Higher than offcanvas (1050) */
   }
   
   .dropdown-item {

@@ -97,6 +97,29 @@ const RegistrationForm = () => {
 
     try {
       const response = await Registration.save(formData);
+      if(response.status === 200) {
+        alert('Registration successful!');
+        resetField('FirstName');
+        resetField('LastName');
+        resetField('Gender');
+        resetField('DOB');
+        resetField('Nationality');
+        resetField('IdentifyType');
+        resetField('IdentificationNum');
+        resetField('Phone');
+        resetField('Email');
+        resetField('Password');
+        resetField('Address');
+        resetField('City');
+        resetField('Country');
+        resetField('RaceCategoryID');
+        resetField('TShirtSize');
+        resetField('Comments');
+        resetField('ITRAUserName');
+        resetField('UserPhoto');
+
+        window.location.href = '/login';
+      }
       return response;
       // Handle response
     } catch (error) {

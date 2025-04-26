@@ -1,12 +1,74 @@
+import { useEffect, useState } from "react";
+
 const EventDetails = () => {
+    const [timeRemaining, setTimeRemaining] = useState({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+    });
+    useEffect(() => {
+        const eventDate = new Date('2025-10-25T00:00:00').getTime();
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+                return;
+            }
+
+            setTimeRemaining({
+                days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+                seconds: Math.floor((distance % (1000 * 60)) / 1000)
+            });
+        };
+
+        updateCountdown();
+        const timer = setInterval(updateCountdown, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
     return (
         <div className="container my-5">
             {/* Main Title */}
-            <div className="row mb-5">
+            <div className="row justify-content-center">
+                <div className="col-md-8">
+                    <div className="card">
+                        <div className="card-header bg-primary text-white">
+                            <h4 className="mb-0 text-center">Event Countdown Timer</h4>
+                        </div>
+                        <div className="card-body">
+                            <div className="row text-center">
+                                <div className="col-3">
+                                    <h3 id="days" className="display-4">{timeRemaining.days}</h3>
+                                    <p>Days</p>
+                                </div>
+                                <div className="col-3">
+                                    <h3 id="hours" className="display-4">{timeRemaining.hours}</h3>
+                                    <p>Hours</p>
+                                </div>
+                                <div className="col-3">
+                                    <h3 id="minutes" className="display-4">{timeRemaining.minutes}</h3>
+                                    <p>Minutes</p>
+                                </div>
+                                <div className="col-3">
+                                    <h3 id="seconds" className="display-4">{timeRemaining.seconds}</h3>
+                                    <p>Seconds</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row" style={{ marginTop: '150px' }}>
                 <div className="col-12 text-center">
-                    <h1 className="display-4 fw-bold text-warning">OUR EVENT CATEGORIES!</h1>
+                    <h1 className="display-4 fw-bold text-warning">ELIGIBILITY CRITERIA!</h1>
                     <p className="lead px-lg-5 mx-lg-5">
-                        Here, you can find out some amazing pictures and small portions of our EVENTS categories that are available.
+                        Here, you can find out ELIGIBILITY CRITERIA of our EVENTS that are available.
                     </p>
                 </div>
             </div>
@@ -32,19 +94,19 @@ const EventDetails = () => {
                                 />
                                 </span> */}
                                 <span className="badge me-2">
-                                <img 
-                                    src="./ITRA_Point3.png" 
-                                    alt="Website favicon" 
-                                    style={{ width: '70px', height: '30px' }}
-                                />
+                                    <img
+                                        src="./ITRA_Point3.png"
+                                        alt="Website favicon"
+                                        style={{ width: '70px', height: '30px' }}
+                                    />
                                 </span>
                                 <span className="badge bg-info me-2">2395m Elevation</span>
                                 <span className="badge">
-                                <img 
-                                    src="./UTMB_Index.png" 
-                                    alt="Website favicon" 
-                                    style={{ width: '100px', height: '25px' }}
-                                />
+                                    <img
+                                        src="./UTMB_Index.png"
+                                        alt="Website favicon"
+                                        style={{ width: '100px', height: '25px' }}
+                                    />
                                 </span>
                             </div>
 
@@ -99,19 +161,19 @@ const EventDetails = () => {
                             <h3 className="card-title text-primary">50K</h3>
                             <div className="mb-3">
                                 <span className="badge me-2">
-                                <img 
-                                    src="./ITRA_POINT2.png" 
-                                    alt="Website favicon" 
-                                    style={{ width: '70px', height: '30px' }}
-                                />
+                                    <img
+                                        src="./ITRA_POINT2.png"
+                                        alt="Website favicon"
+                                        style={{ width: '70px', height: '30px' }}
+                                    />
                                 </span>
                                 <span className="badge bg-info me-2">1437m Elevation</span>
                                 <span className="badge">
-                                <img 
-                                    src="./UTMB_Index.png" 
-                                    alt="Website favicon" 
-                                    style={{ width: '100px', height: '25px' }}
-                                />
+                                    <img
+                                        src="./UTMB_Index.png"
+                                        alt="Website favicon"
+                                        style={{ width: '100px', height: '25px' }}
+                                    />
                                 </span>
                             </div>
 
@@ -165,20 +227,20 @@ const EventDetails = () => {
                         <div className="card-body">
                             <h3 className="card-title text-primary">33K</h3>
                             <div className="mb-3">
-                            <span className="badge me-2">
-                                <img 
-                                    src="./ITRA_Point1.png" 
-                                    alt="Website favicon" 
-                                    style={{ width: '70px', height: '30px' }}
-                                />
+                                <span className="badge me-2">
+                                    <img
+                                        src="./ITRA_Point1.png"
+                                        alt="Website favicon"
+                                        style={{ width: '70px', height: '30px' }}
+                                    />
                                 </span>
                                 <span className="badge bg-info me-2">958m Elevation</span>
                                 <span className="badge">
-                                <img 
-                                    src="./UTMB_Index.png" 
-                                    alt="Website favicon" 
-                                    style={{ width: '100px', height: '25px' }}
-                                />
+                                    <img
+                                        src="./UTMB_Index.png"
+                                        alt="Website favicon"
+                                        style={{ width: '100px', height: '25px' }}
+                                    />
                                 </span>
                             </div>
 
@@ -287,16 +349,16 @@ const EventDetails = () => {
                 <div className="col-12">
                     <div className="card border-0 shadow-sm">
                         <div className="card-body">
-                            <h3 className="card-title text-danger mb-4">
+                            <h3 className="card-title text-info mb-4">
                                 <i className="bi bi-exclamation-triangle-fill me-2"></i>
                                 Important Notes for All Categories
                             </h3>
-                            
+
                             <div className="alert alert-warning">
-                                <strong>Experience-Based Exceptions:</strong> The organizers reserve the right to allow participation 
+                                <strong>Experience-Based Exceptions:</strong> The organizers reserve the right to allow participation
                                 even if the above criteria aren't fully met, based on alternative experience and race history.
                             </div>
-                            
+
                             <h5 className="fw-bold mt-4">Submission Requirements:</h5>
                             <ul className="list-group list-group-flush mb-3">
                                 <li className="list-group-item">
@@ -308,7 +370,7 @@ const EventDetails = () => {
                                     <strong>Preference given</strong> to applicants providing official chip timing results
                                 </li>
                             </ul>
-                            
+
                             <h5 className="fw-bold mt-3">Strava Specifics:</h5>
                             <ul className="list-group list-group-flush mb-3">
                                 <li className="list-group-item">
@@ -320,7 +382,7 @@ const EventDetails = () => {
                                     Only <strong>Elapsed Time</strong> considered from Strava records
                                 </li>
                             </ul>
-                            
+
                             <h5 className="fw-bold mt-3">Elevation & Accounts:</h5>
                             <ul className="list-group list-group-flush mb-3">
                                 <li className="list-group-item">
@@ -332,7 +394,7 @@ const EventDetails = () => {
                                     Active <strong>ITRA & UTMB accounts</strong> required for all participants
                                 </li>
                             </ul>
-                            
+
                             <div className="alert alert-info mt-4">
                                 <h6 className="fw-bold">
                                     <i className="bi bi-people-fill me-2"></i>
@@ -349,9 +411,9 @@ const EventDetails = () => {
             </div>
 
             {/* Registration CTA */}
-            <div className="row mt-4">
+            <div className="row mt-4" hidden>
                 <div className="col-12 text-center">
-                    <button className="btn btn-warning btn-lg px-5 py-3 fw-bold">
+                    <button className="btn btn-warning btn-lg px-5 py-3 fw-bold"> 
                         <a href="/registration" className="text-light">
                             <i className="bi bi-pencil-square me-2"></i>
                             Register Now

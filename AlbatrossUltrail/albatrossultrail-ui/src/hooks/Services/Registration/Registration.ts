@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios"
 // http://127.0.0.1:8000 https://albatrossultrail.com
-const BASE_URL = 'http://127.0.0.1:8000/api'
+const BASE_URL = 'https://albatrossultrail.com/api'
 
 const api: AxiosInstance  = axios.create({
     baseURL: BASE_URL,
